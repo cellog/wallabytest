@@ -42,14 +42,14 @@ module.exports = function (wallaby) {
     })
     .concat([
       { pattern: 'app/imports/**/*.test.*', ignore: true },
-      { pattern: 'app/imports/startup/**/*.jsx', load: true },
-      { pattern: 'app/imports/startup/**/*.js', load: true },
+      { pattern: 'app/imports/startup/**/*.jsx', load: false },
+      { pattern: 'app/imports/startup/**/*.js', load: false },
     ]))
 
   return {
     files: meteorPackageFiles,
     tests: [
-      { pattern: 'app/imports/**/*.test.*', load: true }
+      { pattern: 'app/imports/**/*.test.*', load: false }
     ],
     env: {
       type: 'browser'
@@ -61,10 +61,9 @@ module.exports = function (wallaby) {
       'app/**/*.jsx': babelCompiler
     },
 
-    //postprocessor: wallabyPostprocessor,
+    postprocessor: wallabyPostprocessor,
 
     setup: () => {
-      return
       // required to trigger test loading
       window.__moduleBundler.loadTests()
     },
