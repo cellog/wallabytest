@@ -1,7 +1,7 @@
 module.exports = function (wallaby) {
   return {
     files: [
-      { pattern: 'app/imports/**/*.js*', ignore: true },
+      { pattern: 'app/imports/**/*.test.js', ignore: true },
       'app/imports/api/stuff.js'
     ],
     tests: [
