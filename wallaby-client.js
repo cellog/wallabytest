@@ -7,9 +7,8 @@ module.exports = function (wallaby) {
 
   const webpackConfig = {
     resolve: {
-      root: path.join(wallaby.projectCacheDir, 'app/node_modules', 'app', 'app/imports'),
+      root: path.join(wallaby.projectCacheDir, 'app', 'imports'),
       extensions: ['', '.js', '.jsx', '.json'],
-      modulesDirectories: ['app/node_modules']
     },
     module: {
       loaders: [
@@ -31,19 +30,19 @@ module.exports = function (wallaby) {
     path.resolve('app/.meteor/local/build/programs/web.browser/program.json')).manifest
   const basePath = 'app/.meteor/local/build/programs/web.browser'
   const meteorPackageFiles = [
-    'app/.meteor/local/build/programs/web.browser/merged-stylesheets.css',
-    'app/imports/testing/runtime-config.js'
+    { pattern: 'app/.meteor/local/build/programs/web.browser/merged-stylesheets.css', instrument: false },
+    { pattern: 'app/imports/testing/runtime-config.js', instrument: false }
   ].concat(appManifest
     .filter(function (file) {
       return file.type === 'js' && file.path.startsWith('packages/')
     })
     .map(function (file) {
-      return { pattern: path.join(basePath, file.path), load: true }
+      return { pattern: path.join(basePath, file.path), load: true, instrument: false }
     })
     .concat([
       { pattern: 'app/imports/**/*.test.*', ignore: true },
-      { pattern: 'app/imports/startup/**/*.jsx', load: false },
-      { pattern: 'app/imports/startup/**/*.js', load: false },
+      { pattern: 'app/imports/api/**/*.jsx', load: false },
+      { pattern: 'app/imports/api/**/*.js', load: false },
     ]))
 
   return {
