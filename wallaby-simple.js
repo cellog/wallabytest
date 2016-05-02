@@ -1,4 +1,5 @@
 module.exports = function (wallaby) {
+  const load = require
   return {
     files: [
       { pattern: 'app/imports/**/*.test.js', ignore: true },
@@ -9,7 +10,7 @@ module.exports = function (wallaby) {
     ],
     compilers: {
       'app/imports/**/*.js': wallaby.compilers.babel({
-        babel: require('babel-core'),
+        babel: load('babel-core'),
         presets: ['es2015', 'stage-2', 'react']
       })
     },
