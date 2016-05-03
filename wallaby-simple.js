@@ -3,7 +3,6 @@ module.exports = function (wallaby) {
   return {
     files: [
       { pattern: 'app/imports/**/*.test.js', ignore: true },
-      { pattern: 'app/imports/testing/npm-require.js', instrument: false },
       'app/imports/api/stuff.js'
     ],
     tests: [
@@ -24,10 +23,11 @@ module.exports = function (wallaby) {
       type: 'node'
     },
     setup: function(w) {
-//      const n = require(`${w.localProjectDir}app/.meteor/local/build/programs/server/npm-require.js`)
-      const n = require('app/imports/testing/npm-require.js')
       global.getMeteorApp = (file) => {
-        //console.log(n.resolve(`meteor/${file}`))
+        global.Package = {
+          'underscore': require(`${w.localProjectDir}app/.meteor/local/build/programs/server/packages/underscore.js`)
+        }
+        return require(`${w.localProjectDir}app/.meteor/local/build/programs/server/packages/${file}.js`)
       }
     },
     testFramework: 'mocha',
