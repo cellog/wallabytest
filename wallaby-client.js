@@ -30,6 +30,7 @@ module.exports = function (wallaby) {
     path.resolve('app/.meteor/local/build/programs/web.browser/program.json')).manifest
   const basePath = 'app/.meteor/local/build/programs/web.browser'
   const meteorPackageFiles = [
+    { pattern: 'app/imports/testing/setup.js', instrument: false, load: true },
     { pattern: 'app/.meteor/local/build/programs/web.browser/merged-stylesheets.css', instrument: false },
     { pattern: 'app/imports/testing/runtime-config.js', instrument: false }
   ].concat(appManifest
@@ -41,14 +42,14 @@ module.exports = function (wallaby) {
     })
     .concat([
       { pattern: 'app/imports/**/*.test.*', ignore: true },
-      { pattern: 'app/imports/api/**/*.jsx', load: false },
-      { pattern: 'app/imports/api/**/*.js', load: false },
+      { pattern: 'app/imports/api/**/*.jsx', load: true },
+      { pattern: 'app/imports/api/**/*.js', load: true },
     ]))
 
   return {
     files: meteorPackageFiles,
     tests: [
-      { pattern: 'app/imports/**/*.test.*', load: false }
+      { pattern: 'app/imports/**/*.test.*', load: true }
     ],
     env: {
       type: 'browser'
@@ -59,12 +60,20 @@ module.exports = function (wallaby) {
       'app/**/*.js': babelCompiler,
       'app/**/*.jsx': babelCompiler
     },
+    preprocessors: {
+      '**/*.js': file => {
+        return file.content.replace("require('meteor/", "getMeteorApp(meteor/'")
+      }
+    },
 
     postprocessor: wallabyPostprocessor,
 
     setup: () => {
       // required to trigger test loading
       window.__moduleBundler.loadTests()
+      window.getMeteorApp = (file) => {
+        return window.Package[file.replace('meteor/','')]
+      }
     },
     debug: true
   }
